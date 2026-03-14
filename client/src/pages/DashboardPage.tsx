@@ -3,20 +3,13 @@ import DoctorDashboard from './DoctorDashboard';
 import AdminDashboard from './AdminDashboard';
 import { useVitalsSocket } from '../hooks/useVitalsSocket';
 
-import { useNavigate } from 'react-router-dom';
-
 // ---------- DASHBOARD HUB ----------
 
 export default function DashboardPage() {
   const role = localStorage.getItem('movecare_role') || 'patient';
-  const navigate = useNavigate();
 
   // Live real-time data from the WebSocket Simulator!
   const { patients, alerts, escalations, myVitals, myNotifications, myEvents } = useVitalsSocket();
-
-  const handlePatientClick = (patientId: string) => {
-    navigate(`/patients/${patientId}`);
-  };
 
   if (role === 'admin') {
     return (
@@ -34,7 +27,6 @@ export default function DashboardPage() {
         patients={patients}
         alerts={alerts}
         escalations={escalations}
-        onPatientClick={handlePatientClick}
       />
     );
   }
