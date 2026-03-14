@@ -6,6 +6,9 @@ import User from '../models/User';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+// Only these emails may access doctor or admin roles
+const PRIVILEGED_EMAILS = ['samridhsen9@gmail.com'];
+
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { fullName, email, password, role, ...additionalData } = req.body;
@@ -19,11 +22,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Enforce role whitelist: only privileged emails can be doctor/admin
+    let assignedRole = role || 'patient';
+    if ((assignedRole === 'doctor' || assignedRole === 'admin') && !PRIVILEGED_EMAILS.includes(email)) {
+      assignedRole = 'patient';
+    }
+
     const newUser = new User({
       fullName,
       email,
       password: hashedPassword,
-      role: role || 'patient',
+      role: assignedRole,
       ...additionalData,
     });
 
@@ -114,11 +123,14 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(googleId + (process.env.JWT_SECRET || 'secret'), salt);
       
+      // Assign role based on the email whitelist
+      const assignedRole = PRIVILEGED_EMAILS.includes(email!) ? 'doctor' : 'patient';
+
       user = new User({
         fullName: name || 'Google User',
         email,
         password: hashedPassword,
-        role: 'patient', // Default
+        role: assignedRole,
       });
       await user.save();
     }

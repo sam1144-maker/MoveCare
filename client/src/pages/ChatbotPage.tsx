@@ -83,6 +83,14 @@ export default function ChatbotPage() {
 
       const data = await response.json();
       
+      // If the token is expired or invalid, auto-logout
+      if (response.status === 401) {
+        localStorage.removeItem('movecare_token');
+        localStorage.removeItem('movecare_role');
+        window.location.href = '/login';
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(data.message || 'Failed to get response');
       }

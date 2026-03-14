@@ -1,27 +1,143 @@
+import { useState } from 'react';
+import PatientDashboard from './PatientDashboard';
+import DoctorDashboard from './DoctorDashboard';
+import AdminDashboard from './AdminDashboard';
+import type { Patient, Alert, EscalationEvent } from './DoctorDashboard';
+
+// ---------- MOCK DATA (will be replaced by WebSocket feeds) ----------
+
+const MOCK_PATIENTS: Patient[] = [
+  {
+    id: 'p1',
+    name: 'Ananya Sharma',
+    age: 34,
+    condition: 'Cardiac',
+    status: 'stable',
+    vitals: { heartRate: 72, spo2: 98, temperature: 36.6, accelerometer: 'Stable' },
+  },
+  {
+    id: 'p2',
+    name: 'Rajesh Verma',
+    age: 58,
+    condition: 'Diabetic',
+    status: 'warning',
+    vitals: { heartRate: 88, spo2: 94, temperature: 37.2, accelerometer: 'Stable' },
+  },
+  {
+    id: 'p3',
+    name: 'Priya Nair',
+    age: 45,
+    condition: 'Post-Surgery',
+    status: 'critical',
+    vitals: { heartRate: 110, spo2: 89, temperature: 38.1, accelerometer: 'Fall Detected' },
+  },
+  {
+    id: 'p4',
+    name: 'Vikram Singh',
+    age: 62,
+    condition: 'Hypertension',
+    status: 'stable',
+    vitals: { heartRate: 76, spo2: 97, temperature: 36.8, accelerometer: 'Stable' },
+  },
+  {
+    id: 'p5',
+    name: 'Meera Joshi',
+    age: 29,
+    condition: 'Respiratory',
+    status: 'warning',
+    vitals: { heartRate: 95, spo2: 92, temperature: 37.5, accelerometer: 'Stable' },
+  },
+  {
+    id: 'p6',
+    name: 'Arjun Patel',
+    age: 71,
+    condition: 'Cardiac',
+    status: 'stable',
+    vitals: { heartRate: 68, spo2: 96, temperature: 36.4, accelerometer: 'Stable' },
+  },
+];
+
+const MOCK_ALERTS: Alert[] = [
+  {
+    id: 'a1',
+    patientName: 'Priya Nair',
+    message: 'SpO₂ dropped below 90% — Fall detected by accelerometer.',
+    severity: 'critical',
+    timestamp: '2 min ago',
+  },
+  {
+    id: 'a2',
+    patientName: 'Rajesh Verma',
+    message: 'Heart rate elevated above normal resting range.',
+    severity: 'warning',
+    timestamp: '8 min ago',
+  },
+  {
+    id: 'a3',
+    patientName: 'Meera Joshi',
+    message: 'SpO₂ at 92% — monitoring closely.',
+    severity: 'warning',
+    timestamp: '15 min ago',
+  },
+];
+
+const MOCK_ESCALATIONS: EscalationEvent[] = [
+  {
+    id: 'e1',
+    timestamp: '19:05',
+    level: 'patient',
+    message: 'Alert sent to Priya Nair — "Are you okay?"',
+  },
+  {
+    id: 'e2',
+    timestamp: '19:07',
+    level: 'family',
+    message: 'No response — escalating to family contact.',
+  },
+  {
+    id: 'e3',
+    timestamp: '19:10',
+    level: 'doctor',
+    message: 'Family unresponsive — escalating to Dr. Samridh.',
+  },
+];
+
+// ---------- DASHBOARD HUB ----------
+
 export default function DashboardPage() {
-  const role = localStorage.getItem('movecare_role') || 'Unknown Role';
+  const role = localStorage.getItem('movecare_role') || 'patient';
 
-  return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-slate-500 mt-2">Welcome back to MoveCare. ({role})</p>
-      </header>
+  // These state variables will be replaced by WebSocket state later
+  const [patients] = useState<Patient[]>(MOCK_PATIENTS);
+  const [alerts] = useState<Alert[]>(MOCK_ALERTS);
+  const [escalations] = useState<EscalationEvent[]>(MOCK_ESCALATIONS);
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center justify-center text-center h-48">
-          <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center mb-4 text-primary-600">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-          </div>
-          <h3 className="text-lg font-semibold text-slate-800">Quick Actions</h3>
-          <p className="text-sm text-slate-500 mt-1">Placeholder widget for quick application links.</p>
-        </div>
+  const handlePatientClick = (patientId: string) => {
+    console.log('Patient clicked:', patientId);
+    // Future: open patient detail modal or navigate
+  };
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center justify-center text-center h-48 lg:col-span-2">
-           <h3 className="text-xl font-semibold text-slate-800 mb-2">Platform Overview</h3>
-           <p className="text-slate-500 text-sm">Widgets and analytics will populate here based on user permissions.</p>
-        </div>
-      </div>
-    </div>
-  );
+  if (role === 'admin') {
+    return (
+      <AdminDashboard
+        patients={patients}
+        alerts={alerts}
+        escalations={escalations}
+        onPatientClick={handlePatientClick}
+      />
+    );
+  }
+
+  if (role === 'doctor') {
+    return (
+      <DoctorDashboard
+        patients={patients}
+        alerts={alerts}
+        escalations={escalations}
+        onPatientClick={handlePatientClick}
+      />
+    );
+  }
+
+  return <PatientDashboard />;
 }

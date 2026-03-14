@@ -2,17 +2,45 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Menu, X, LayoutDashboard, MessageSquare, 
-  FileText, LogOut, Activity 
+  FileText, LogOut, Activity, Users, ShieldCheck, Settings
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
+// Role-specific navigation configs
+const NAV_BY_ROLE: Record<string, { name: string; path: string; icon: any }[]> = {
+  patient: [
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Chatbot', path: '/chatbot', icon: MessageSquare },
+    { name: 'Records', path: '/records', icon: FileText },
+  ],
+  doctor: [
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Chatbot', path: '/chatbot', icon: MessageSquare },
+    { name: 'Records', path: '/records', icon: FileText },
+    { name: 'Patients', path: '/patients', icon: Users },
+  ],
+  admin: [
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'User Management', path: '/admin/users', icon: Users },
+    { name: 'Roles & Permissions', path: '/admin/roles', icon: ShieldCheck },
+    { name: 'Settings', path: '/admin/settings', icon: Settings },
+  ],
+};
+
+const ROLE_BADGE: Record<string, { bg: string; text: string; label: string; gradient: string }> = {
+  patient: { bg: 'bg-primary-100', text: 'text-primary-700', label: 'Patient', gradient: 'from-primary-500 to-primary-700' },
+  doctor: { bg: 'bg-teal-100', text: 'text-teal-700', label: 'Doctor', gradient: 'from-teal-500 to-emerald-600' },
+  admin: { bg: 'bg-indigo-100', text: 'text-indigo-700', label: 'Admin', gradient: 'from-indigo-500 to-purple-600' },
+};
+
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const role = localStorage.getItem('movecare_role') || 'patient';
 
   const handleLogout = () => {
     localStorage.removeItem('movecare_token');
@@ -20,46 +48,56 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     navigate('/');
   };
 
-  const navLinks = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Chatbot', path: '/chatbot', icon: MessageSquare },
-    { name: 'Records', path: '/records', icon: FileText },
-  ];
+  const navLinks = NAV_BY_ROLE[role] || NAV_BY_ROLE.patient;
+  const badge = ROLE_BADGE[role] || ROLE_BADGE.patient;
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
+    <div className="flex h-screen bg-slate-100 overflow-hidden">
       
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-20 bg-slate-900/50 lg:hidden"
+          className="fixed inset-0 z-20 bg-slate-900/60 backdrop-blur-sm lg:hidden transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out
-        lg:relative lg:translate-x-0
+        fixed inset-y-0 left-0 z-30 w-72 bg-white border-r border-slate-200/80 transform transition-transform duration-300 ease-in-out
+        lg:relative lg:translate-x-0 shadow-xl lg:shadow-none
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="h-full flex flex-col">
-          {/* Logo Handle */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-            <Link to="/dashboard" className="text-xl font-extrabold text-primary-600 flex items-center">
-              <Activity className="w-6 h-6 mr-2" />
-              MoveCare
+          {/* Logo */}
+          <div className="flex items-center justify-between px-6 py-5">
+            <Link to="/dashboard" className="flex items-center gap-2.5 group">
+              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${badge.gradient} flex items-center justify-center shadow-lg transition-transform group-hover:scale-105`}>
+                <Activity className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-extrabold text-slate-900 tracking-tight">MoveCare</span>
             </Link>
             <button 
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-slate-500 hover:text-slate-700"
+              className="lg:hidden text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 
+          {/* Role Badge */}
+          <div className="px-6 pb-4">
+            <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${badge.bg} ${badge.text}`}>
+              <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
+              {badge.label} Portal
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="mx-6 border-t border-slate-100" />
+
           {/* Nav Links */}
-          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          <nav className="flex-1 px-4 py-5 space-y-1.5 overflow-y-auto">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = location.pathname === link.path;
@@ -68,28 +106,30 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Link
                   key={link.name}
                   to={link.path}
+                  onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-colors
+                    flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200
                     ${isActive 
-                      ? 'bg-primary-50 text-primary-700' 
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                      ? `bg-gradient-to-r ${badge.gradient} text-white shadow-md` 
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }
                   `}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? 'text-primary-600' : 'text-slate-400'}`} />
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                   {link.name}
                 </Link>
               );
             })}
           </nav>
 
-          {/* User Profile / Logout footer */}
-          <div className="p-4 border-t border-slate-200">
+          {/* Logout */}
+          <div className="p-4 border-t border-slate-100">
             <button 
               onClick={handleLogout}
-              className="flex items-center w-full px-4 py-3 text-sm font-medium text-red-600 rounded-xl hover:bg-red-50 transition-colors"
+              className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-slate-500 rounded-xl 
+                hover:bg-red-50 hover:text-red-600 transition-all duration-200"
             >
-              <LogOut className="w-5 h-5 mr-3" />
+              <LogOut className="w-5 h-5" />
               Sign Out
             </button>
           </div>
@@ -98,22 +138,27 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Main Content wrapper */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Mobile Header Toolbar */}
-        <header className="bg-white border-b border-slate-200 lg:hidden">
+        {/* Mobile Header */}
+        <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/50 lg:hidden sticky top-0 z-10">
           <div className="px-4 py-3 flex items-center justify-between">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="text-slate-500 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded p-1"
+              className="text-slate-500 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <Menu className="w-6 h-6" />
             </button>
-            <span className="text-lg font-bold text-slate-900">MoveCare</span>
-            <div className="w-6" /> {/* Placeholder for balance */}
+            <div className="flex items-center gap-2">
+              <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${badge.gradient} flex items-center justify-center`}>
+                <Activity className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-lg font-bold text-slate-900">MoveCare</span>
+            </div>
+            <div className="w-9" />
           </div>
         </header>
 
-        {/* Dynamic Page Content */}
-        <main className="flex-1 overflow-y-auto bg-slate-50">
+        {/* Page Content */}
+        <main className="flex-1 overflow-y-auto bg-slate-100">
           {children}
         </main>
       </div>

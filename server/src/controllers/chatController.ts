@@ -29,9 +29,9 @@ export const processChat = async (req: Request, res: Response): Promise<void> =>
     // Initialize the SDK dynamically inside the request to ensure process.env is fully loaded
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
-    // Use Gemini 2.5 Flash as it is explicitly supported by this API key
+    // Use Gemini 2.5 Flash Lite — trying separate quota pool
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
