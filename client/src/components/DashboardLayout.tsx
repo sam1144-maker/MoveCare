@@ -9,7 +9,6 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-// Role-specific navigation configs
 const NAV_BY_ROLE: Record<string, { name: string; path: string; icon: any }[]> = {
   patient: [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -30,10 +29,10 @@ const NAV_BY_ROLE: Record<string, { name: string; path: string; icon: any }[]> =
   ],
 };
 
-const ROLE_BADGE: Record<string, { bg: string; text: string; label: string; gradient: string }> = {
-  patient: { bg: 'bg-primary-100', text: 'text-primary-700', label: 'Patient', gradient: 'from-primary-500 to-primary-700' },
-  doctor: { bg: 'bg-teal-100', text: 'text-teal-700', label: 'Doctor', gradient: 'from-teal-500 to-emerald-600' },
-  admin: { bg: 'bg-indigo-100', text: 'text-indigo-700', label: 'Admin', gradient: 'from-indigo-500 to-purple-600' },
+const ROLE_LABEL: Record<string, string> = {
+  patient: 'Patient',
+  doctor: 'Doctor',
+  admin: 'Admin',
 };
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
@@ -49,22 +48,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const navLinks = NAV_BY_ROLE[role] || NAV_BY_ROLE.patient;
-  const badge = ROLE_BADGE[role] || ROLE_BADGE.patient;
+  const roleLabel = ROLE_LABEL[role] || 'Patient';
 
   return (
-    <div className="flex h-screen bg-slate-100 overflow-hidden">
+    <div className="flex h-screen bg-green-50/50 overflow-hidden">
       
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-20 bg-slate-900/60 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 z-20 bg-gray-900/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-30 w-72 bg-white border-r border-slate-200/80 transform transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-30 w-72 bg-white border-r border-green-200 transform transition-transform duration-300 ease-in-out
         lg:relative lg:translate-x-0 shadow-xl lg:shadow-none
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
@@ -72,14 +71,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           {/* Logo */}
           <div className="flex items-center justify-between px-6 py-5">
             <Link to="/dashboard" className="flex items-center gap-2.5 group">
-              <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${badge.gradient} flex items-center justify-center shadow-lg transition-transform group-hover:scale-105`}>
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center shadow-lg shadow-green-200 transition-transform group-hover:scale-105">
                 <Activity className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-extrabold text-slate-900 tracking-tight">MoveCare</span>
+              <span className="text-xl font-extrabold text-gray-900 tracking-tight">MoveCare</span>
             </Link>
             <button 
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors"
+              className="lg:hidden text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-green-50 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -87,14 +86,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
           {/* Role Badge */}
           <div className="px-6 pb-4">
-            <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold ${badge.bg} ${badge.text}`}>
-              <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
-              {badge.label} Portal
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-green-100 text-green-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              {roleLabel} Portal
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="mx-6 border-t border-slate-100" />
+          <div className="mx-6 border-t border-green-100" />
 
           {/* Nav Links */}
           <nav className="flex-1 px-4 py-5 space-y-1.5 overflow-y-auto">
@@ -110,12 +108,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   className={`
                     flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200
                     ${isActive 
-                      ? `bg-gradient-to-r ${badge.gradient} text-white shadow-md` 
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-green-200' 
+                      : 'text-gray-600 hover:bg-green-50 hover:text-gray-900'
                     }
                   `}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-400'}`} />
                   {link.name}
                 </Link>
               );
@@ -123,11 +121,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </nav>
 
           {/* Logout */}
-          <div className="p-4 border-t border-slate-100">
+          <div className="p-4 border-t border-green-100">
             <button 
               onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-slate-500 rounded-xl 
-                hover:bg-red-50 hover:text-red-600 transition-all duration-200"
+              className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-gray-500 rounded-xl 
+                hover:bg-green-50 hover:text-green-700 transition-all duration-200"
             >
               <LogOut className="w-5 h-5" />
               Sign Out
@@ -136,29 +134,29 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </aside>
 
-      {/* Main Content wrapper */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile Header */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/50 lg:hidden sticky top-0 z-10">
+        <header className="bg-white/80 backdrop-blur-md border-b border-green-200/50 lg:hidden sticky top-0 z-10">
           <div className="px-4 py-3 flex items-center justify-between">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="text-slate-500 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+              className="text-gray-500 hover:text-gray-700 p-1.5 rounded-lg hover:bg-green-50 transition-colors"
             >
               <Menu className="w-6 h-6" />
             </button>
             <div className="flex items-center gap-2">
-              <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${badge.gradient} flex items-center justify-center`}>
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center">
                 <Activity className="w-4 h-4 text-white" />
               </div>
-              <span className="text-lg font-bold text-slate-900">MoveCare</span>
+              <span className="text-lg font-bold text-gray-900">MoveCare</span>
             </div>
             <div className="w-9" />
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-slate-100">
+        <main className="flex-1 overflow-y-auto bg-green-50/30">
           {children}
         </main>
       </div>

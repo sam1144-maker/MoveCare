@@ -21,11 +21,19 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 
+import http from 'http';
+import { initVitalsSimulator } from './services/vitalsSimulator';
+
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI as string)
   .then(() => {
     console.log('Connected to MongoDB successfully');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    
+    // Create HTTP Server to share with WebSocket
+    const server = http.createServer(app);
+    initVitalsSimulator(server);
+
+    server.listen(PORT, () => console.log(`Server & WebSocket running on port ${PORT}`));
   })
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error.message);

@@ -7,6 +7,8 @@ import ChatbotPage from './pages/ChatbotPage';
 import DashboardLayout from './components/DashboardLayout';
 import DashboardPage from './pages/DashboardPage';
 import RecordsPage from './pages/RecordsPage';
+import PatientsPage from './pages/PatientsPage';
+import PatientDetailPage from './pages/PatientDetailPage';
 
 // Simple protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -59,7 +61,14 @@ function App() {
       <Route path="/patients" element={
         <ProtectedRoute>
           <DashboardLayout>
-            <RecordsPage />
+            <PatientsPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/patients/:id" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <PatientDetailPage />
           </DashboardLayout>
         </ProtectedRoute>
       } />
