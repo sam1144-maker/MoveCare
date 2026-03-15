@@ -10,6 +10,8 @@ import RecordsPage from './pages/RecordsPage';
 import PatientsPage from './pages/PatientsPage';
 import PatientDetailPage from './pages/PatientDetailPage';
 
+import TeleconsultationPage from './pages/TeleconsultationPage';
+
 // Simple protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = localStorage.getItem('movecare_role') !== null;
@@ -41,6 +43,13 @@ function App() {
         <ProtectedRoute>
           <DashboardLayout>
             <DashboardPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/teleconsultation" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <TeleconsultationPage />
           </DashboardLayout>
         </ProtectedRoute>
       } />

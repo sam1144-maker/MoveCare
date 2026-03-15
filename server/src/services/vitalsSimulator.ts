@@ -193,6 +193,23 @@ export function initVitalsSimulator(server: any) {
     ws.send(JSON.stringify({ type: 'alerts_update', data: alerts }));
     ws.send(JSON.stringify({ type: 'escalations_update', data: escalations }));
 
+    // Listen for incoming messages (like telehealth signals)
+    ws.on('message', (message) => {
+      try {
+        const parsed = JSON.parse(message.toString());
+        // Relay telehealth signaling and dummy sync events to other clients
+        if (parsed.type === 'telehealth_signal' || parsed.type === 'telehealth_sync_appointments') {
+          for (const client of clients) {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+              client.send(message.toString());
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error parsing WS message:', err);
+      }
+    });
+
     ws.on('close', () => {
       console.log('Client disconnected');
       clients.delete(ws);

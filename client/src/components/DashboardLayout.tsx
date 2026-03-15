@@ -12,17 +12,20 @@ interface DashboardLayoutProps {
 const NAV_BY_ROLE: Record<string, { name: string; path: string; icon: any }[]> = {
   patient: [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Teleconsultation', path: '/teleconsultation', icon: Activity },
     { name: 'Chatbot', path: '/chatbot', icon: MessageSquare },
     { name: 'Records', path: '/records', icon: FileText },
   ],
   doctor: [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Teleconsultation', path: '/teleconsultation', icon: Activity },
     { name: 'Chatbot', path: '/chatbot', icon: MessageSquare },
     { name: 'Records', path: '/records', icon: FileText },
     { name: 'Patients', path: '/patients', icon: Users },
   ],
   admin: [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { name: 'Teleconsultation', path: '/teleconsultation', icon: Activity },
     { name: 'User Management', path: '/admin/users', icon: Users },
     { name: 'Roles & Permissions', path: '/admin/roles', icon: ShieldCheck },
     { name: 'Settings', path: '/admin/settings', icon: Settings },
