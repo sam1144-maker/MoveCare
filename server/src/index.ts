@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors({
   origin: process.env.CORS_ORIGINS
-    ? process.env.CORS_ORIGINS.split(',')
+    ? process.env.CORS_ORIGINS.split(',').map(o => o.trim())
     : ["http://localhost:5173", "http://localhost:5174"],
   credentials: true,
 }));
@@ -34,7 +34,7 @@ import { initVitalsSimulator } from './services/vitalsSimulator';
 mongoose.connect(process.env.MONGODB_URI as string)
   .then(() => {
     console.log('Connected to MongoDB successfully');
-    
+
     // Create HTTP Server to share with WebSocket
     const server = http.createServer(app);
     initVitalsSimulator(server);
