@@ -28,7 +28,7 @@ export function useVitalsSocket() {
   // Extracted personal dashboard state
   const [myVitals, setMyVitals] = useState<MyVitals>(MY_INITIAL_VITALS);
   const [myNotifications, setMyNotifications] = useState<PatientNotification[]>([]);
-  const [myEvents, setMyEvents] = useState<HealthEvent[]>([]);
+  const [myEvents] = useState<HealthEvent[]>([]);
 
   const ws = useRef<WebSocket | null>(null);
 

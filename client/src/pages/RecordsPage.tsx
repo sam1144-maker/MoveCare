@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FileText, Upload, PlusCircle, X, CheckCircle, AlertTriangle, Clock, ChevronDown, ChevronUp, Image as ImageIcon, TrendingUp } from 'lucide-react';
+import { FileText, Upload, PlusCircle, X, AlertTriangle, Clock, ChevronDown, ChevronUp, Image as ImageIcon, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { API_BASE, apiFetch } from '../config';
 
