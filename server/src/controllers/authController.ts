@@ -8,7 +8,7 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Only these emails may access doctor or admin roles
 const DOCTOR_EMAILS = ['samridhsen9@gmail.com'];
-const ADMIN_EMAILS: string[] = [];
+const ADMIN_EMAILS: string[] = ['admin@movecare.com'];
 const PRIVILEGED_EMAILS = [...DOCTOR_EMAILS, ...ADMIN_EMAILS];
 
 // ---------- TOKEN HELPERS ----------
