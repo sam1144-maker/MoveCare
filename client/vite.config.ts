@@ -17,4 +17,10 @@ export default defineConfig({
       },
     },
   },
+  resolve: {
+    alias: {
+      // Force Rollup to find react-is for Recharts
+      'react-is': 'react-is',
+    },
+  },
 })
