@@ -93,7 +93,7 @@ export const processChat = async (req: Request, res: Response): Promise<void> =>
 
       const completion = await groq.chat.completions.create({
         messages: visionMessages,
-        model: "meta-llama/llama-4-scout-17b-16e-instruct", 
+        model: "llama-3.2-11b-vision-preview", 
         temperature: 0.5,
         max_tokens: 1024
       });

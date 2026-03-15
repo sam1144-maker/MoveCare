@@ -34,7 +34,7 @@ async function testV(modelName: string) {
 async function run() {
   await testV("llama-3.2-11b-vision");
   await testV("llama-3.2-90b-vision");
-  await testV("meta-llama/llama-4-scout-17b-16e-instruct"); // Just in case this scout is multimodal
+  await testV("llama-3.2-11b-vision-preview"); // Multimodal vision model
 }
 
 run();

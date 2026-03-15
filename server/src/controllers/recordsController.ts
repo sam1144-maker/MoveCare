@@ -39,7 +39,7 @@ Extract every parameter visible in the report. If a normal range is shown, inclu
           { type: 'image_url', image_url: { url: finalImageUrl } }
         ]
       }],
-      model: 'meta-llama/llama-4-scout-17b-16e-instruct',
+      model: 'llama-3.2-11b-vision-preview',
       temperature: 0.2,
       max_tokens: 2048
     });
