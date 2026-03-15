@@ -123,9 +123,15 @@ export default function RecordsPage() {
     if (!extractedData) return;
     setSaving(true);
     try {
+<<<<<<< HEAD
       const res = await apiFetch(`${API}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+=======
+      const res = await fetch(`${API}/save`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+>>>>>>> videocall
         body: JSON.stringify({
           reportType: extractedData.reportType,
           source: 'image_upload',
@@ -180,9 +186,15 @@ export default function RecordsPage() {
     setSaving(true);
 
     try {
+<<<<<<< HEAD
       const res = await apiFetch(`${API}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+=======
+      const res = await fetch(`${API}/save`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+>>>>>>> videocall
         body: JSON.stringify({ reportType: selectedReportType, source: 'manual_form', parameters })
       });
       const data = await res.json();

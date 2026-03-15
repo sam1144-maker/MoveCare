@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Thermometer, Activity, Smartphone, MessageSquare, Bell, CheckCircle, AlertTriangle, Clock, ArrowRight, Users, X } from 'lucide-react';
+<<<<<<< HEAD
 import { API_BASE, apiFetch } from '../config';
+=======
+>>>>>>> videocall
 
 // ---------- TYPE DEFINITIONS ----------
 
@@ -60,8 +63,15 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     if (isOpen) {
       setSuccess(false);
       setError('');
+<<<<<<< HEAD
 
       apiFetch(`${API_BASE}/api/caregiver/mine`)
+=======
+      const token = localStorage.getItem('movecare_token');
+      fetch('http://localhost:5001/api/caregiver/mine', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+>>>>>>> videocall
         .then(r => r.json())
         .then(data => {
           if (data.caregiver && data.caregiver.fullName) {
@@ -85,10 +95,17 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     setLoading(true);
     setError('');
     try {
+<<<<<<< HEAD
 
       const res = await apiFetch(`${API_BASE}/api/caregiver/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+=======
+      const token = localStorage.getItem('movecare_token');
+      const res = await fetch('http://localhost:5001/api/caregiver/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+>>>>>>> videocall
         body: JSON.stringify(form)
       });
       if (!res.ok) throw new Error('Failed to save.');

@@ -10,6 +10,14 @@ import RecordsPage from './pages/RecordsPage';
 import DoctorRecordsPage from './pages/DoctorRecordsPage';
 import PatientsPage from './pages/PatientsPage';
 import PatientDetailPage from './pages/PatientDetailPage';
+import TeleconsultationPage from './pages/TeleconsultationPage';
+// import ExerciseGamesPage from './pages/ExerciseGamesPage';
+
+// Role-based records page
+const RoleBasedRecords = () => {
+  const role = localStorage.getItem('movecare_role') || 'patient';
+  return role === 'doctor' ? <DoctorRecordsPage /> : <RecordsPage />;
+};
 
 // Role-based records page
 const RoleBasedRecords = () => {
@@ -51,6 +59,20 @@ function App() {
           </DashboardLayout>
         </ProtectedRoute>
       } />
+      <Route path="/teleconsultation" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <TeleconsultationPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+      {/* <Route path="/exercise-games" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <ExerciseGamesPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } /> */}
       <Route path="/chatbot" element={
         <ProtectedRoute>
           <DashboardLayout>

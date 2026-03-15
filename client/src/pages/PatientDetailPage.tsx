@@ -46,7 +46,11 @@ export default function PatientDetailPage() {
 
       const response = await apiFetch(`${API_BASE}/api/chat`, {
         method: 'POST',
+<<<<<<< HEAD
         headers: { 'Content-Type': 'application/json' },
+=======
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('movecare_token')}` },
+>>>>>>> videocall
         body: JSON.stringify({ message: prompt })
       });
 

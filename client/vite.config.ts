@@ -6,6 +6,16 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  optimizeDeps: {
+    exclude: [
+      '@tensorflow/tfjs-core',
+      '@tensorflow/tfjs-converter',
+      '@tensorflow/tfjs-backend-webgl',
+      '@tensorflow/tfjs-backend-webgpu',
+      '@tensorflow-models/pose-detection',
+      '@mediapipe/pose',
+    ],
+  },
   server: {
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
