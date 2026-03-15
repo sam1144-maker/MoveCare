@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Patient, Alert, EscalationEvent } from '../pages/DoctorDashboard';
 import type { MyVitals, PatientNotification, HealthEvent } from '../pages/PatientDashboard';
+import { WS_BASE } from '../config';
 
 // Hardcoded patient-specific baseline for the demo
 const MY_INITIAL_VITALS: MyVitals = {
@@ -34,7 +35,7 @@ export function useVitalsSocket() {
   useEffect(() => {
     // Connect to the WebSocket running on the same port as the backend API
     const connect = () => {
-      ws.current = new WebSocket('ws://localhost:5001');
+      ws.current = new WebSocket(WS_BASE);
 
       ws.current.onmessage = (event) => {
         try {

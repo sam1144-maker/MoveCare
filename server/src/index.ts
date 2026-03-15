@@ -13,8 +13,9 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ["http://localhost:5173",
-    "http://localhost:5174"],
+  origin: process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(',')
+    : ["http://localhost:5173", "http://localhost:5174"],
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));

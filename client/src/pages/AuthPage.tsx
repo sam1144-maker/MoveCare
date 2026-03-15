@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { API_BASE } from '../config';
 import { GoogleLogin } from '@react-oauth/google';
 import { Mail, Lock, User, Activity, AlertCircle, Eye, EyeOff, HeartPulse, Shield, Bell } from 'lucide-react';
 
@@ -35,7 +36,7 @@ export default function AuthPage() {
 
     try {
       if (activeTab === 'register') {
-        const response = await fetch('http://localhost:5001/api/auth/register', {
+        const response = await fetch(`${API_BASE}/api/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ fullName, email, password, role: activeRole }),
@@ -48,7 +49,7 @@ export default function AuthPage() {
         localStorage.setItem('movecare_role', data.user.role);
         navigate('/dashboard');
       } else {
-        const response = await fetch('http://localhost:5001/api/auth/login', {
+        const response = await fetch(`${API_BASE}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
@@ -72,7 +73,7 @@ export default function AuthPage() {
     setIsLoading(true);
     setAuthError(null);
     try {
-      const res = await fetch('http://localhost:5001/api/auth/google', {
+      const res = await fetch(`${API_BASE}/api/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ credential: response.credential }),

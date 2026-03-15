@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Thermometer, Activity, Smartphone, MessageSquare, Bell, CheckCircle, AlertTriangle, Clock, ArrowRight, Users, X } from 'lucide-react';
+import { API_BASE } from '../config';
 
 // ---------- TYPE DEFINITIONS ----------
 
@@ -60,7 +61,7 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       setSuccess(false);
       setError('');
       const token = localStorage.getItem('movecare_token');
-      fetch('http://localhost:5001/api/caregiver/mine', {
+      fetch(`${API_BASE}/api/caregiver/mine`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
         .then(r => r.json())
@@ -87,7 +88,7 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     setError('');
     try {
       const token = localStorage.getItem('movecare_token');
-      const res = await fetch('http://localhost:5001/api/caregiver/save', {
+      const res = await fetch(`${API_BASE}/api/caregiver/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(form)

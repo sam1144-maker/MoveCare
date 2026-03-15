@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, Activity, Phone, AlertCircle, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE } from '../config';
 import { useVitalsSocket } from '../hooks/useVitalsSocket';
 import { PatientCard } from './DoctorDashboard';
 
@@ -28,7 +29,7 @@ export default function PatientsPage() {
 
   useEffect(() => {
     const token = localStorage.getItem('movecare_token');
-    fetch('http://localhost:5001/api/auth/patients', {
+    fetch(`${API_BASE}/api/auth/patients`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(r => r.json())

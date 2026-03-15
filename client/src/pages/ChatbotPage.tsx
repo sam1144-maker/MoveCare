@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE } from '../config';
 import { Bot, Send, Trash2, Clock, AlertCircle, Paperclip, X, CheckCheck } from 'lucide-react';
 
 interface ChatMessage {
@@ -80,7 +81,7 @@ export default function ChatbotPage() {
 
     try {
       const token = localStorage.getItem('movecare_token');
-      const response = await fetch('http://localhost:5001/api/chat', {
+      const response = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ message: text.trim(), image: userMsg.image, history: messages })

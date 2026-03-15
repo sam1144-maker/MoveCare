@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Search, FileText, Calendar, X, Clock, Eye, Image as ImageIcon, TrendingUp, Filter } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { API_BASE } from '../config';
 
-const API = 'http://localhost:5001/api/records';
+const API = `${API_BASE}/api/records`;
 
 interface Parameter {
   fieldName: string;
