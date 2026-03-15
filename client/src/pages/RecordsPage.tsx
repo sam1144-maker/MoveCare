@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FileText, Upload, PlusCircle, X, CheckCircle, AlertTriangle, Clock, ChevronDown, ChevronUp, Image as ImageIcon, TrendingUp } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { API_BASE } from '../config';
+import { API_BASE, apiFetch } from '../config';
 
 const API = `${API_BASE}/api/records`;
 
@@ -46,9 +46,7 @@ function getUserId(): string {
   } catch { return ''; }
 }
 
-function getToken(): string {
-  return localStorage.getItem('movecare_token') || '';
-}
+
 
 // ---------- MAIN ----------
 
@@ -80,7 +78,7 @@ export default function RecordsPage() {
   // Fetch records on load
   useEffect(() => {
     if (!patientId) return;
-    fetch(`${API}/${patientId}`, { headers: { Authorization: `Bearer ${getToken()}` } })
+    apiFetch(`${API}/${patientId}`)
       .then(r => r.json())
       .then(data => { setRecords(data.records || []); setLoading(false); })
       .catch(() => setLoading(false));
@@ -100,9 +98,9 @@ export default function RecordsPage() {
       setShowImageConfirm(true);
 
       try {
-        const res = await fetch(`${API}/extract-image`, {
+        const res = await apiFetch(`${API}/extract-image`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ image: base64 })
         });
         const data = await res.json();
@@ -125,9 +123,9 @@ export default function RecordsPage() {
     if (!extractedData) return;
     setSaving(true);
     try {
-      const res = await fetch(`${API}/save`, {
+      const res = await apiFetch(`${API}/save`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           reportType: extractedData.reportType,
           source: 'image_upload',
@@ -152,9 +150,9 @@ export default function RecordsPage() {
     setFormValues({});
 
     try {
-      const res = await fetch(`${API}/generate-form`, {
+      const res = await apiFetch(`${API}/generate-form`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reportType: type })
       });
       const data = await res.json();
@@ -182,9 +180,9 @@ export default function RecordsPage() {
     setSaving(true);
 
     try {
-      const res = await fetch(`${API}/save`, {
+      const res = await apiFetch(`${API}/save`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reportType: selectedReportType, source: 'manual_form', parameters })
       });
       const data = await res.json();

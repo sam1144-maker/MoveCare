@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, FileText, Calendar, X, Clock, Eye, Image as ImageIcon, TrendingUp, Filter } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { API_BASE } from '../config';
+import { API_BASE, apiFetch } from '../config';
 
 const API = `${API_BASE}/api/records`;
 
@@ -33,9 +33,7 @@ interface RecordEntry {
 const REPORT_TYPES = ['All', 'Blood Test', 'Diabetes Report', 'Blood Pressure Log', 'Kidney Function Test', 'Liver Function Test', 'Thyroid Report', 'General Checkup'];
 const DATE_FILTERS = ['All Time', 'Today', 'This Week', 'This Month'];
 
-function getToken(): string {
-  return localStorage.getItem('movecare_token') || '';
-}
+
 
 // Helper: check if value is in normal range
 function getRangeStatus(value: string, normalRange: string): 'normal' | 'borderline' | 'abnormal' | 'unknown' {
@@ -69,7 +67,7 @@ export default function DoctorRecordsPage() {
   const [fullImage, setFullImage] = useState(false);
 
   useEffect(() => {
-    fetch(`${API}/all`, { headers: { Authorization: `Bearer ${getToken()}` } })
+    apiFetch(`${API}/all`)
       .then(r => r.json())
       .then(data => { setAllRecords(data.records || []); setLoading(false); })
       .catch(() => setLoading(false));

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Thermometer, Activity, Smartphone, MessageSquare, Bell, CheckCircle, AlertTriangle, Clock, ArrowRight, Users, X } from 'lucide-react';
-import { API_BASE } from '../config';
+import { API_BASE, apiFetch } from '../config';
 
 // ---------- TYPE DEFINITIONS ----------
 
@@ -60,10 +60,8 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     if (isOpen) {
       setSuccess(false);
       setError('');
-      const token = localStorage.getItem('movecare_token');
-      fetch(`${API_BASE}/api/caregiver/mine`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+
+      apiFetch(`${API_BASE}/api/caregiver/mine`)
         .then(r => r.json())
         .then(data => {
           if (data.caregiver && data.caregiver.fullName) {
@@ -87,10 +85,10 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     setLoading(true);
     setError('');
     try {
-      const token = localStorage.getItem('movecare_token');
-      const res = await fetch(`${API_BASE}/api/caregiver/save`, {
+
+      const res = await apiFetch(`${API_BASE}/api/caregiver/save`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       });
       if (!res.ok) throw new Error('Failed to save.');

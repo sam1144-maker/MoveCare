@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Heart, Activity, Thermometer, BrainCircuit, AlertTriangle, Clock, Users, Phone, CheckCircle } from 'lucide-react';
 import { useVitalsSocket } from '../hooks/useVitalsSocket';
-import { API_BASE } from '../config';
+import { API_BASE, apiFetch } from '../config';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts';
@@ -16,10 +16,7 @@ export default function PatientDetailPage() {
 
   useEffect(() => {
     if (id) {
-      const token = localStorage.getItem('movecare_token');
-      fetch(`${API_BASE}/api/caregiver/patient/${id}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
+      apiFetch(`${API_BASE}/api/caregiver/patient/${id}`)
         .then(r => r.json())
         .then(data => setCaregiver(data.caregiver))
         .catch(() => {});
@@ -47,9 +44,9 @@ export default function PatientDetailPage() {
       Current vitals: HR ${patient.vitals.heartRate}, SpO2 ${patient.vitals.spo2}%, Temp ${patient.vitals.temperature}°C. 
       Recent alerts: ${patientAlerts.map(a => a.message).join('; ') || 'None'}.`;
 
-      const response = await fetch(`${API_BASE}/api/chat`, {
+      const response = await apiFetch(`${API_BASE}/api/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('movecare_token')}` },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: prompt })
       });
 
