@@ -11,14 +11,11 @@ import DoctorRecordsPage from './pages/DoctorRecordsPage';
 import PatientsPage from './pages/PatientsPage';
 import PatientDetailPage from './pages/PatientDetailPage';
 import TeleconsultationPage from './pages/TeleconsultationPage';
+import AdminPatientsPage from './pages/AdminPatientsPage';
+import AdminDoctorsPage from './pages/AdminDoctorsPage';
+import AdminAnalyticsPage from './pages/AdminAnalyticsPage';
 // import ExerciseGamesPage from './pages/ExerciseGamesPage';
-
-// Role-based records page
-const RoleBasedRecords = () => {
-  const role = localStorage.getItem('movecare_role') || 'patient';
-  return role === 'doctor' ? <DoctorRecordsPage /> : <RecordsPage />;
-};
-
+  
 // Role-based records page
 const RoleBasedRecords = () => {
   const role = localStorage.getItem('movecare_role') || 'patient';
@@ -98,6 +95,29 @@ function App() {
         <ProtectedRoute>
           <DashboardLayout>
             <PatientDetailPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+
+      {/* Admin Specific Routes */}
+      <Route path="/admin/patients" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <AdminPatientsPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/doctors" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <AdminDoctorsPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/analytics" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <AdminAnalyticsPage />
           </DashboardLayout>
         </ProtectedRoute>
       } />

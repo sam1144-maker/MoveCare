@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Menu, X, LayoutDashboard, MessageSquare,
-  FileText, LogOut, Activity, Users, ShieldCheck, Settings
+  FileText, LogOut, Activity, Users, ShieldCheck, TrendingUp
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -27,9 +27,9 @@ const NAV_BY_ROLE: Record<string, { name: string; path: string; icon: any }[]> =
   admin: [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Teleconsultation', path: '/teleconsultation', icon: Activity },
-    { name: 'User Management', path: '/admin/users', icon: Users },
-    { name: 'Roles & Permissions', path: '/admin/roles', icon: ShieldCheck },
-    { name: 'Settings', path: '/admin/settings', icon: Settings },
+    { name: 'All Patients', path: '/admin/patients', icon: Users },
+    { name: 'Doctor Directory', path: '/admin/doctors', icon: ShieldCheck },
+    { name: 'System Analytics', path: '/admin/analytics', icon: TrendingUp },
   ],
 };
 

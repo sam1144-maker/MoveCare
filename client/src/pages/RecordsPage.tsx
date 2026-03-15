@@ -178,7 +178,7 @@ export default function RecordsPage() {
 
     if (parameters.length === 0) return;
     setSaving(true);
-
+    try {
       const res = await apiFetch(`${API}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

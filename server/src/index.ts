@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes';
 import chatRoutes from './routes/chatRoutes';
 import caregiverRoutes from './routes/caregiverRoutes';
 import recordsRoutes from './routes/recordsRoutes';
+import adminRoutes from './routes/adminRoutes';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/caregiver', caregiverRoutes);
 app.use('/api/records', recordsRoutes);
+app.use('/api/admin', adminRoutes);
 
 import http from 'http';
 import { initVitalsSimulator } from './services/vitalsSimulator';
