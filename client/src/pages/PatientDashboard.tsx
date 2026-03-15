@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Thermometer, Activity, Smartphone, MessageSquare, Bell, CheckCircle, AlertTriangle, Clock, ArrowRight, Users, X } from 'lucide-react';
-<<<<<<< HEAD
 import { API_BASE, apiFetch } from '../config';
-=======
->>>>>>> videocall
 
 // ---------- TYPE DEFINITIONS ----------
 
@@ -37,6 +34,8 @@ interface PatientDashboardProps {
   recentEvents: HealthEvent[];
 }
 
+// ---------- CAREGIVER MODAL ----------
+
 interface CaregiverData {
   fullName: string;
   relationship: string;
@@ -50,8 +49,6 @@ const EMPTY_CAREGIVER: CaregiverData = {
   fullName: '', relationship: '', phone: '', email: '', city: '', availableHours: '',
 };
 
-// ---------- CAREGIVER MODAL ----------
-
 function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [form, setForm] = useState<CaregiverData>(EMPTY_CAREGIVER);
   const [isExisting, setIsExisting] = useState(false);
@@ -63,15 +60,7 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     if (isOpen) {
       setSuccess(false);
       setError('');
-<<<<<<< HEAD
-
       apiFetch(`${API_BASE}/api/caregiver/mine`)
-=======
-      const token = localStorage.getItem('movecare_token');
-      fetch('http://localhost:5001/api/caregiver/mine', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
->>>>>>> videocall
         .then(r => r.json())
         .then(data => {
           if (data.caregiver && data.caregiver.fullName) {
@@ -95,17 +84,9 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     setLoading(true);
     setError('');
     try {
-<<<<<<< HEAD
-
       const res = await apiFetch(`${API_BASE}/api/caregiver/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-=======
-      const token = localStorage.getItem('movecare_token');
-      const res = await fetch('http://localhost:5001/api/caregiver/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
->>>>>>> videocall
         body: JSON.stringify(form)
       });
       if (!res.ok) throw new Error('Failed to save.');
@@ -121,80 +102,60 @@ function CaregiverModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
 
   if (!isOpen) return null;
 
-  const inputCls = "w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition-all text-sm";
-
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center">
-              <Users className="w-4 h-4 text-emerald-400" />
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
+              <Users className="w-4 h-4 text-slate-600" />
             </div>
-            <h2 className="text-base font-bold text-slate-900">{isExisting ? 'My Caregiver' : 'Add Caregiver'}</h2>
+            <h2 className="text-base font-bold text-slate-900">
+              {isExisting ? 'Update Caregiver' : 'Add Caregiver'}
+            </h2>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+          <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors">
             <X className="w-4 h-4 text-slate-400" />
           </button>
         </div>
-
-        {success && (
-          <div className="mx-5 mt-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-            <p className="text-sm font-medium text-emerald-800">Caregiver {isExisting ? 'updated' : 'added'} successfully.</p>
-          </div>
-        )}
-
-        {error && (
-          <div className="mx-5 mt-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-            <p className="text-sm font-medium text-red-800">{error}</p>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="p-5 space-y-3.5">
-          <div>
-            <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Full Name *</label>
-            <input name="fullName" value={form.fullName} onChange={handleChange} required className={inputCls} placeholder="Caregiver's full name" />
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Relationship *</label>
-            <select name="relationship" value={form.relationship} onChange={handleChange} required className={`${inputCls} bg-white`}>
-              <option value="">Select relationship</option>
-              <option value="Spouse">Spouse</option>
-              <option value="Parent">Parent</option>
-              <option value="Son/Daughter">Son/Daughter</option>
-              <option value="Sibling">Sibling</option>
-              <option value="Relative">Relative</option>
-              <option value="Professional Nurse">Professional Nurse</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Phone Number *</label>
-            <input name="phone" type="tel" value={form.phone} onChange={handleChange} required pattern="[0-9]{10}" maxLength={10} className={inputCls} placeholder="10-digit phone number" />
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Email</label>
-            <input name="email" type="email" value={form.email} onChange={handleChange} className={inputCls} placeholder="email@example.com" />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">City</label>
-              <input name="city" value={form.city} onChange={handleChange} className={inputCls} placeholder="City" />
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {success && (
+            <div className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium p-3 rounded-xl flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" /> Caregiver saved successfully!
             </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Availability</label>
-              <select name="availableHours" value={form.availableHours} onChange={handleChange} className={`${inputCls} bg-white`}>
-                <option value="">Select</option>
-                <option value="Morning">Morning</option>
-                <option value="Evening">Evening</option>
-                <option value="24x7">24×7</option>
-              </select>
+          )}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm font-medium p-3 rounded-xl">
+              {error}
             </div>
-          </div>
-          <button type="submit" disabled={loading || success}
-            className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-1">
+          )}
+          {[
+            { label: 'Full Name', name: 'fullName', placeholder: 'e.g. Priya Sharma', required: true },
+            { label: 'Relationship', name: 'relationship', placeholder: 'e.g. Daughter', required: true },
+            { label: 'Phone Number', name: 'phone', placeholder: '+91 98765 43210', required: true },
+            { label: 'Email', name: 'email', placeholder: 'caregiver@email.com', required: false },
+            { label: 'City', name: 'city', placeholder: 'e.g. Mumbai', required: false },
+            { label: 'Available Hours', name: 'availableHours', placeholder: 'e.g. 9am–6pm', required: false },
+          ].map(field => (
+            <div key={field.name}>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                {field.label}{field.required && <span className="text-red-400 ml-0.5">*</span>}
+              </label>
+              <input
+                name={field.name}
+                value={(form as any)[field.name]}
+                onChange={handleChange}
+                required={field.required}
+                placeholder={field.placeholder}
+                className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition-all"
+              />
+            </div>
+          ))}
+          <button
+            type="submit"
+            disabled={loading || success}
+            className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+          >
             {loading ? 'Saving...' : isExisting ? 'Update Caregiver' : 'Save Caregiver'}
           </button>
         </form>
