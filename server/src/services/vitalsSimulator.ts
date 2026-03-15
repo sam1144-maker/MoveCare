@@ -1,4 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
+import { sendCaregiverWhatsApp, hasDoctorAcknowledged } from './whatsappService';
+import User from '../models/User';
 
 export interface PatientVitals {
   heartRate: number;
@@ -132,16 +134,24 @@ function tick() {
     if (newStatus === 'critical' && !hasTriggeredEscalation && p.id === ANOMALY_PATIENT_ID) {
       hasTriggeredEscalation = true;
       
+      const alertId = generateId();
+      const alertMsg = `COMPOUND ALERT: SpO₂ dropped to ${newSpO2}% and HR spiked to ${newHR} bpm. Fall detected.`;
+      const alertTimestamp = formatTime(new Date());
+
       // Create Alert
       const newAlert: Alert = {
-        id: generateId(),
+        id: alertId,
         patientName: p.name,
-        message: `COMPOUND ALERT: SpO₂ dropped to ${newSpO2}% and HR spiked to ${newHR} bpm. Fall detected.`,
+        message: alertMsg,
         severity: 'critical',
-        timestamp: formatTime(new Date()),
+        timestamp: alertTimestamp,
       };
       alerts = [newAlert, ...alerts].slice(0, 10); // Keep last 10
       broadcast('alerts_update', alerts);
+
+      // Capture current vitals for the WhatsApp message
+      const capturedVitals = { heartRate: newHR, spo2: newSpO2, temperature: newTemp };
+      const capturedName = p.name;
 
       // Trigger Escalation Chain with Delays
       setTimeout(() => {
@@ -149,10 +159,36 @@ function tick() {
         broadcast('escalations_update', escalations);
       }, 1000);
 
-      setTimeout(() => {
-        escalations = [{ id: generateId(), timestamp: formatTime(new Date()), level: 'family', message: `No response from patient. SMS sent to emergency contact (Husband).` }, ...escalations];
+      // CAREGIVER LEVEL: Send WhatsApp at 4 seconds (before family SMS at 6s)
+      setTimeout(async () => {
+        // Skip if doctor has already acknowledged
+        if (hasDoctorAcknowledged()) {
+          console.log('[Escalation] Doctor acknowledged before caregiver window. Skipping WhatsApp.');
+          return;
+        }
+
+        escalations = [{ id: generateId(), timestamp: formatTime(new Date()), level: 'family', message: `No response from patient. WhatsApp alert sent to caregiver.` }, ...escalations];
         broadcast('escalations_update', escalations);
-      }, 6000);
+
+        // Try to find a caregiver in the DB (search by patient name for simulated patients)
+        try {
+          const dbUser = await User.findOne({ fullName: { $regex: capturedName, $options: 'i' } });
+          if (dbUser && dbUser.caregiver && dbUser.caregiver.phone) {
+            await sendCaregiverWhatsApp(
+              alertId,
+              dbUser.caregiver.phone,
+              capturedName,
+              alertMsg,
+              capturedVitals,
+              alertTimestamp
+            );
+          } else {
+            console.log(`[WhatsApp] No caregiver found for ${capturedName}. Skipping WhatsApp.`);
+          }
+        } catch (err) {
+          console.error('[WhatsApp] Error looking up caregiver:', err);
+        }
+      }, 4000);
 
       setTimeout(() => {
         escalations = [{ id: generateId(), timestamp: formatTime(new Date()), level: 'doctor', message: `Contact unreachable. Priority push notification sent to Dr. Samridh.` }, ...escalations];

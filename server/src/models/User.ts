@@ -10,6 +10,15 @@ const userSchema = new mongoose.Schema({
   experience: { type: String },
   license: { type: String },
   age: { type: String },
+  // Caregiver information (for patients)
+  caregiver: {
+    fullName: { type: String },
+    relationship: { type: String },
+    phone: { type: String },
+    email: { type: String },
+    city: { type: String },
+    availableHours: { type: String },
+  },
 }, { timestamps: true });
 
 export default mongoose.model('User', userSchema);

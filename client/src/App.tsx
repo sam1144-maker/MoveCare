@@ -7,10 +7,17 @@ import ChatbotPage from './pages/ChatbotPage';
 import DashboardLayout from './components/DashboardLayout';
 import DashboardPage from './pages/DashboardPage';
 import RecordsPage from './pages/RecordsPage';
+import DoctorRecordsPage from './pages/DoctorRecordsPage';
 import PatientsPage from './pages/PatientsPage';
 import PatientDetailPage from './pages/PatientDetailPage';
-
 import TeleconsultationPage from './pages/TeleconsultationPage';
+// import ExerciseGamesPage from './pages/ExerciseGamesPage';
+
+// Role-based records page
+const RoleBasedRecords = () => {
+  const role = localStorage.getItem('movecare_role') || 'patient';
+  return role === 'doctor' ? <DoctorRecordsPage /> : <RecordsPage />;
+};
 
 // Simple protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -53,6 +60,13 @@ function App() {
           </DashboardLayout>
         </ProtectedRoute>
       } />
+      {/* <Route path="/exercise-games" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <ExerciseGamesPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } /> */}
       <Route path="/chatbot" element={
         <ProtectedRoute>
           <DashboardLayout>
@@ -63,7 +77,7 @@ function App() {
       <Route path="/records" element={
         <ProtectedRoute>
           <DashboardLayout>
-            <RecordsPage />
+            <RoleBasedRecords />
           </DashboardLayout>
         </ProtectedRoute>
       } />
